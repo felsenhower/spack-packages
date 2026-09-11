@@ -75,7 +75,9 @@ class UtilLinux(AutotoolsPackage):
 
     depends_on("python@2.7:", type="build")
     depends_on("pkgconfig", type="build")
-    depends_on("ncurses", type="link")
+    # "build" is necessary here to ensure that the correct ncurses is found during the build process
+    # This fixes a bug that occurs on systems with Homebrew or Linuxbrew-installed ncurses.
+    depends_on("ncurses", type=("build", "link"))
     depends_on("zlib-api", type="link")  # sbin/mkfs.cramfs
     depends_on("libxcrypt", type="link")  # sbin/sulogin
 

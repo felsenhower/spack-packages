@@ -51,23 +51,15 @@ class Futhark(Package):
         sha256="dd566ced0c09904ab06eb5344661aa33bf5c3d108ccf5f4b4d04179584065c9d",
     )
 
-    conflicts(
-        "platform=darwin", msg="Only Linux x86_64 binaries are published upstream"
-    )
-    conflicts(
-        "platform=windows", msg="Only Linux x86_64 binaries are published upstream"
-    )
-    conflicts(
-        "target=aarch64:", msg="Only Linux x86_64 binaries are published upstream"
-    )
+    conflicts("platform=darwin", msg="Only Linux x86_64 binaries are published upstream")
+    conflicts("platform=windows", msg="Only Linux x86_64 binaries are published upstream")
+    conflicts("target=aarch64:", msg="Only Linux x86_64 binaries are published upstream")
 
     # These variants only make the headers/libraries/tools that the
     # respective Futhark backend shells out to (a system C compiler, nvcc,
     # hipcc, ispc, ...) available in the environment. They do not affect how
     # the futhark compiler itself is built, since it is a precompiled binary.
-    variant(
-        "c", default=True, description="Make dependencies for the C backend available"
-    )
+    variant("c", default=True, description="Make dependencies for the C backend available")
     variant(
         "opencl",
         default=False,

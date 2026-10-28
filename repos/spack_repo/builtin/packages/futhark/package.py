@@ -51,9 +51,10 @@ class Futhark(Package):
         sha256="dd566ced0c09904ab06eb5344661aa33bf5c3d108ccf5f4b4d04179584065c9d",
     )
 
-    conflicts("platform=darwin", msg="Only Linux x86_64 binaries are published upstream")
-    conflicts("platform=windows", msg="Only Linux x86_64 binaries are published upstream")
-    conflicts("target=aarch64:", msg="Only Linux x86_64 binaries are published upstream")
+    requires(
+        "platform=linux target=x86_64:",
+        msg="Only Linux x86_64 binaries are published upstream",
+    )
 
     # These variants only make the headers/libraries/tools that the
     # respective Futhark backend shells out to (a system C compiler, nvcc,

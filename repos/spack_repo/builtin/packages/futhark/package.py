@@ -51,23 +51,16 @@ class Futhark(Package):
         sha256="dd566ced0c09904ab06eb5344661aa33bf5c3d108ccf5f4b4d04179584065c9d",
     )
 
-    conflicts(
-        "platform=darwin", msg="Only Linux x86_64 binaries are published upstream"
-    )
-    conflicts(
-        "platform=windows", msg="Only Linux x86_64 binaries are published upstream"
-    )
-    conflicts(
-        "target=aarch64:", msg="Only Linux x86_64 binaries are published upstream"
+    requires(
+        "platform=linux target=x86_64:",
+        msg="Only Linux x86_64 binaries are published upstream",
     )
 
     # These variants only make the headers/libraries/tools that the
     # respective Futhark backend shells out to (a system C compiler, nvcc,
     # hipcc, ispc, ...) available in the environment. They do not affect how
     # the futhark compiler itself is built, since it is a precompiled binary.
-    variant(
-        "c", default=True, description="Make dependencies for the C backend available"
-    )
+    variant("c", default=True, description="Make dependencies for the C backend available")
     variant(
         "opencl",
         default=False,
@@ -132,9 +125,6 @@ class Futhark(Package):
         install_tree("share", prefix.share)
 
     def setup_run_environment(self, env):
-        if self.spec.satisfies("+c"):
-            env.prepend_path("PATH", self.spec["c"].prefix.bin)
-
         if self.spec.satisfies("+opencl"):
             env.prepend_path("CPATH", self.spec["opencl-c-headers"].prefix.include)
             env.prepend_path("LIBRARY_PATH", self.spec["ocl-icd"].prefix.lib)
@@ -142,22 +132,12 @@ class Futhark(Package):
 
         if self.spec.satisfies("+cuda"):
             cuda_prefix = self.spec["cuda"].prefix
-            env.set("CUDA_HOME", cuda_prefix)
-            env.prepend_path("PATH", cuda_prefix.bin)
             env.prepend_path("CPATH", cuda_prefix.include)
             env.prepend_path("LIBRARY_PATH", cuda_prefix.lib64)
             env.prepend_path("LD_LIBRARY_PATH", cuda_prefix.lib64)
 
         if self.spec.satisfies("+hip"):
             hip_prefix = self.spec["hip"].prefix
-            env.set("HIP_PATH", hip_prefix)
-            env.prepend_path("PATH", hip_prefix.bin)
             env.prepend_path("CPATH", hip_prefix.include)
             env.prepend_path("LIBRARY_PATH", hip_prefix.lib)
             env.prepend_path("LD_LIBRARY_PATH", hip_prefix.lib)
-
-        if self.spec.satisfies("+ispc"):
-            env.prepend_path("PATH", self.spec["ispc"].prefix.bin)
-
-        if self.spec.satisfies("+python"):
-            env.prepend_path("PATH", self.spec["python"].prefix.bin)
